@@ -14,67 +14,83 @@
     <body>
         <script type="text/javascript" src="./bower_components/highcharts/highcharts.js"></script>
         <script type="text/javascript" src="js/modules/exporting.js"></script>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="sidebar">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="sidebar">
                     <div class="col-sm-3 col-lg-2 col-sm-push-9 col-lg-push-10">
                         <nav class="navbar navbar-default navbar-fixed-side">
-                             <ul class="nav nav-sidebar">
-                                            <li class="active">
-                                                <a href="/">Main</a>
-                                            </li>
-                                            <li>
-                                                <a href="http://biophysical.eu/ieva/gettingStarted">Getting started</a>
-                                            </li>
-                                            <li>
-                                                <a href="http://biophysical.eu/ieva/trainingExplained">Training explained</a>
-                                            </li>
-                                            <li>
-                                                <a href="http://biophysical.eu/ieva/todo">TODO</a>
-                                            </li>
-                                        </ul>
+                            <ul class="nav nav-sidebar">
+                                <li class="active">
+                                    <a href="/">Main</a>
+                                </li>
+                                <li>
+                                    <a href="http://biophysical.eu/ieva/gettingStarted">Getting started</a>
+                                </li>
+                                <li>
+                                    <a href="http://biophysical.eu/ieva/trainingExplained">Training explained</a>
+                                </li>
+                                <li>
+                                    <a href="http://biophysical.eu/ieva/todo">TODO</a>
+                                </li>
+                            </ul>
                         </nav>
                     </div>
-                    </div>
-                    <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2">
-                        <div class="row">
-                            <div class="col-sm-2 col-md-2 col-lg-2">
-                                <h2>MindMouse</h2>         
-                                <table class="table">
-                                    <tbody>
-                                        <tr>
-                                            <td><button type="button" id="is_good" class="btn btn-warning">Is signal good?</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <button type="button" id="blink" class="btn">Blink</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><button type="button" id="jaw_clench" class="btn">Jaw clench</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <button type="button" id="touching_forehead" class="btn">Touching forehead</button></td>
-                                        </tr>
-                                        <!--   <tr style="color: red;">Left</tr>
-                                           <tr style="color: #92278F;">Right</tr>-->
+                </div>
+                <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2">
+                    <div class="row">
+                        <div class="col-sm-2 col-md-2 col-lg-2">
+                            <h2>MindMouse</h2>         
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">Electrodes quality
+                                                <div class="row">
+                                                    <button type="button" id="is_good_AF7" class="btn btn-warning">AF7</button>
+                                                    <button type="button" id="is_good_AF8" class="btn btn-warning">AF8</button>
+                                                </div>
+                                                <div class="row">
+                                                    <button type="button" id="is_good_TP9" class="btn btn-warning">TP9</button>
+                                                    <button type="button" id="is_good_TP10" class="btn btn-warning">TP10</button></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" id="blink" class="btn">Blink</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><button type="button" id="jaw_clench" class="btn">Jaw clench</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" id="touching_forehead" class="btn">Touching forehead</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><p id="battery"></p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                                    </tbody>
-                                </table>
-                                 <img id="left" style="display:none" src="images/left.gif" class="img-rounded" alt="Cinque Terre" width="304" height="236">
-                            </div>
-                            <div class="col-sm-4 col-md-4 col-lg-4">
-                                <div id="chart"></div>
-                            </div>
-                            <div class="pull-right">
-                                 <img id="right" style="display:none" src="images/right.gif" class="img-rounded" alt="Cinque Terre" width="304" height="236">
-                            </div>
                         </div>
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="pull-left">
+                                <img id="left" style="display:none" src="images/left.gif"  width="150" height="150">
+                            </div>
+                            <div id="train"></div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="pull-right">
+                                <img id="right" style="display:none" src="images/right.gif" width="150" height="150">
+                            </div>
+                            <div id="test"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+        </div>
     </body>
 </html>

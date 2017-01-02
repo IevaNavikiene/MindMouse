@@ -1,8 +1,8 @@
 Simple game for Muse EEG headband which helps you to move mouse horizontally.
 It has 3 parts: 
-1. Train SVM to separate left and right side
-2. Control mouse
-3. Has interface in browser to see all process in graphs
+* Train SVM to separate left and right side
+* Control mouse
+* Has interface in browser to see all process in graphs
 
 # Running
 
@@ -16,7 +16,8 @@ It has 3 parts:
   * You'll get an error from the next step if you do. :)
 * Run `node server.js`
 * Serve the public folder
-* You should be getting a live D3 visual of your brainwave EEG.
+* You should be getting a live training and testing with normalized beta absolute power and after it move the mouse.
+If the process stopped it is maybe due to the bad signal from one of the frontal electrodes  
 
 # Game examples
 I enjoyed play with mouse movements these simple games: 
@@ -26,11 +27,14 @@ http://minimouse.us/index.html
 1. Live second graph update
 2. Pause for Mouse moving functionality
 3. Draw SVM boundary
-4. Implement non linear classificator
+4. Compare SVM to other nonlinear classifier or model with more input parameters
 5. Show which electrode signal is bad
 6. Use TP9, TP10 electrodes when they are good
 7. Make code more object orientated
 8. Add tutorial and articles
+9. Normalize input
+10. Visualize battery status
+11. Send training data to database
 
 
 # Forked from
