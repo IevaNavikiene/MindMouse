@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mind Mapping</title>
+        <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="./bower_components/socket.io-client/socket.io.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript"  src="js/main-d3.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+        <link href="css/muse.css" rel="stylesheet">
+    </head>
+    <body>
+        <script type="text/javascript" src="./bower_components/highcharts/highcharts.js"></script>
+        <script type="text/javascript" src="js/modules/exporting.js"></script>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="sidebar">
+                    <div class="col-sm-3 col-lg-2 col-sm-push-9 col-lg-push-10">
+                        <nav class="navbar navbar-default navbar-fixed-side">
+                             <ul class="nav nav-sidebar">
+                                            <li class="active">
+                                                <a href="/">Main</a>
+                                            </li>
+                                            <li>
+                                                <a href="http://biophysical.eu/ieva/gettingStarted">Getting started</a>
+                                            </li>
+                                            <li>
+                                                <a href="http://biophysical.eu/ieva/trainingExplained">Training explained</a>
+                                            </li>
+                                            <li>
+                                                <a href="http://biophysical.eu/ieva/todo">TODO</a>
+                                            </li>
+                                        </ul>
+                        </nav>
+                    </div>
+                    </div>
+                    <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2 col-lg-2">
+                                <h2>MindMouse</h2>         
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td><button type="button" id="is_good" class="btn btn-warning">Is signal good?</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button type="button" id="blink" class="btn">Blink</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><button type="button" id="jaw_clench" class="btn">Jaw clench</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button type="button" id="touching_forehead" class="btn">Touching forehead</button></td>
+                                        </tr>
+                                        <!--   <tr style="color: red;">Left</tr>
+                                           <tr style="color: #92278F;">Right</tr>-->
+
+                                    </tbody>
+                                </table>
+                                 <img id="left" style="display:none" src="images/left.gif" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                <div id="chart"></div>
+                            </div>
+                            <div class="pull-right">
+                                 <img id="right" style="display:none" src="images/right.gif" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>
