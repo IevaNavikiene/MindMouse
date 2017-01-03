@@ -16,11 +16,16 @@ function moveMouse(moveToSide, boundaryPx) {
     }
     robot.moveMouse(moveX, mouse.y);
 }
+//allows to initialize training from browser
+var startTraining = false;
 var demo = false;
 //set process to demo version without muse
 process.argv.forEach(function (val, index, array) {
     if (val == "demo") {
         demo = true;
+    }
+    if (val == "start_training") {
+        startTraining = true;
     }
 });
 /**
@@ -321,13 +326,21 @@ if (demo == true) {
     });
 } else {
     udpPort.open();
+    var param; // initialize param for batery json array
     io.on('connection', function (socket) {
         console.log("socket.io connection");
-        //  socket.on("actions", function (action) {
-        // we received a tweet from the browser
-
-        //      console.log(action);
-        //  });
+        socket.on("actions", function (action) {
+            if (action == 'startTraining') {
+                startTraining = true;
+            }
+            if (action == 'start_stop') {
+                if (stoppedControl == false) {
+                    stoppedControl = true;
+                } else {
+                    stoppedControl = false;
+                }
+            }
+        });
         // Listen for incoming OSC bundles.
         udpPort.on("message", function (oscData) {
             now = Date.now()
@@ -336,6 +349,9 @@ if (demo == true) {
                 if (oscData.address == "/muse/elements/beta_absolute") {
                     if (oscData.args[1] != "0" && oscData.args[2] != "0" && isGoodSignal == true) {
                         if (SVMtrained == 0) {
+                            if (startTraining === false) {
+                                return;
+                            }
                             if (dataToTrainSVM.length < 100) {
                                 console.log('Think right');
                                 normalizedValues = [(oscData.args[1] + minAbsoluteValue) / (maxAbsoluteValue + minAbsoluteValue), (oscData.args[2] + minAbsoluteValue) / (maxAbsoluteValue + minAbsoluteValue)];
@@ -357,15 +373,14 @@ if (demo == true) {
                                     startedTraining = true;
                                 }
                             }
-
                         } else if (stoppedControl == false) {
                             if (SVMtrained == 1) {
                                 console.log('Network trained');
                                 socket.emit('train', {"attr": "boundary", "value": dataForBoundaries(dataToTrainSVM)});
                                 SVMtrained = 2;
                             }
-                            var answer = predictSVM([oscData.args[1], oscData.args[2]]);
                             normalizedValues = [(oscData.args[1] + minAbsoluteValue) / (maxAbsoluteValue + minAbsoluteValue), (oscData.args[2] + minAbsoluteValue) / (maxAbsoluteValue + minAbsoluteValue)];
+                            var answer = predictSVM(normalizedValues);
                             if (answer > 0) {
                                 moveMouse(50, 200);
                                 socket.emit('train', {"attr": "test", "side": "right", "value": normalizedValues});
@@ -423,7 +438,8 @@ if (demo == true) {
                         socket.emit('train', {"attr": "touching_forehead", "value": notTouchingForehead});
                     }
                 } else if (oscData.address == '/muse/config') {
-                    socket.emit('train', {"attr": "battery", "value": oscData.args.battery_percent_remaining});
+                    param = JSON.parse(oscData.args[0]);
+                    socket.emit('train', {"attr": "battery", "value": param.battery_percent_remaining});
                 }//console.log(oscData.address);
             }
         });

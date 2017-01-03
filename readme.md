@@ -20,6 +20,8 @@ It has 3 parts:
 If the process stopped it is maybe due to the bad signal from one of the frontal electrodes  
 * You can stop (and start) mouse control by typing "y" letter
 * You can run demo program without muse device by typing node server.js demo (it will be different from real training Muse EEG because you won't notice appearing instructions to look left or right
+* You can start training by clicking button in browser or passing parameter - node server.js start_training
+
 # Game examples
 I enjoyed play with mouse movements these simple games: 
 http://minimouse.us/index.html
