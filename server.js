@@ -41,6 +41,8 @@ var pauseTime = 20;
 var normalizedValues = [];
 var maxAbsoluteValue = 2;
 var minAbsoluteValue = 1;//we add 1 to electrode value
+// if true then we do not controll mouse 
+var stoppedControl = false; 
 function trainSVM(data) {
     clf.train(data).done(function () {
         SVMtrained = true;
@@ -52,7 +54,7 @@ function predictSVM(data) {
     var prediction = clf.predictSync(data);
     return prediction;
 }
-/*
+
  var data = [
  [[0, 0], 0],
  [[0, 0], 0],
@@ -82,7 +84,7 @@ function predictSVM(data) {
  [[1, 1], 0]
  ];
  trainSVM(data);
- predictSVM([0,1]);*/
+ predictSVM([0,1]);
 var express = require('express');
 var app = express();
 var redis = require('redis')
@@ -108,7 +110,11 @@ udpPort.open();
 
 io.on('connection', function (socket) {
     console.log("socket.io connection");
-    socket.emit('news', {hello: 'world'});
+   //  socket.on("actions", function (action) {
+        // we received a tweet from the browser
+
+  //      console.log(action);
+  //  });
     // Listen for incoming OSC bundles.
     udpPort.on("message", function (oscData) {
         now = Date.now()
@@ -138,7 +144,7 @@ io.on('connection', function (socket) {
                             }
                         }
 
-                    } else {
+                    } else if(stoppedControl == false) {
                         var answer = predictSVM([oscData.args[1], oscData.args[2]]);
                         if (answer > 0) {
                             moveMouse(50, 200);
@@ -209,3 +215,26 @@ server.listen(port, function () {
     console.log("Listening on " + port);
 });
 
+/**
+ * Listen for keypress to stop or start controlling mouse by typing "y" letter
+ */
+var keypress = require('keypress');
+ 
+// make `process.stdin` begin emitting "keypress" events 
+keypress(process.stdin);
+ 
+// listen for the "keypress" event 
+process.stdin.on('keypress', function (ch, key) {
+  console.log('got "keypress"', key);
+  if (key && key.name == 'y') {
+      if(stoppedControl == true){
+          stoppedControl = false;
+      }else{
+          stoppedControl = true;
+      }
+    process.stdin.pause();
+  }
+});
+ 
+process.stdin.setRawMode(true);
+process.stdin.resume();
