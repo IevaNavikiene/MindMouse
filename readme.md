@@ -18,7 +18,7 @@ It has 3 parts:
 * Serve the public folder
 * You should be getting a live training and testing with normalized beta absolute power and after it move the mouse.
 If the process stopped it is maybe due to the bad signal from one of the frontal electrodes  
-* You can stop (and start) mouse control by typing "y" letter
+* You can stop (and start) mouse control by typing "y" letter and enter
 * You can run demo program without muse device by typing node server.js demo (it will be different from real training Muse EEG because you won't notice appearing instructions to look left or right
 * You can start training by clicking button in browser or passing parameter - node server.js start_training
 
@@ -28,14 +28,12 @@ http://minimouse.us/index.html
 
 # TODO
 1. Write tests
-2. Draw SVM boundary
+2. Let change boundary in window how much mouse can move
 3. Compare SVM to other nonlinear classifier or model with more input parameters
 4. Use TP9, TP10 electrodes when they are good
-5. Make code more object orientated
-6. Add tutorial and articles
-7. Visualize battery status
-8. Send training data to database (personal classifiers)\
-9. Button in interface to start or stop mouse control
+5. Add tutorial and articles
+6. Send training data to database (personal classifiers)\
+7. Button in interface to start or stop mouse control
 
 If you have some questions just write to ieva.vaisnoraite2@gmail.com
 

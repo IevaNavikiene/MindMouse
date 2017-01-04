@@ -135,7 +135,19 @@ $(document).ready(function () {
                                     .style("fill", color)
                                     .style("opacity", 0.2)
                                     .attr("r", 1);
-                        }, this))
+                        }, this));
+                        $('#saveData').modal('show');
+                        $('#cancel').on('click', $.proxy(function () {
+                            this.changeMouseControll();
+                        }, this));
+                        $('#close-modal').on('click', $.proxy(function () {
+                            this.changeMouseControll();
+                        }, this));
+                        $('#saveData').on('click', $.proxy(function () {
+                            $('#saveData').modal('hide');
+                            this.changeMouseControll();
+                            this.saveTrainingData();
+                        }, this));
                         break;
                     default:
                         element = $('#blink');
@@ -172,6 +184,9 @@ $(document).ready(function () {
         changeMouseControll: function () {
             this.socket.emit("actions", 'start_stop');
         },
+        saveTrainingData() {
+            this.socket.emit("actions", 'save_data');
+        }
     });
     var mainController = new mainController({
         train: 'train',
