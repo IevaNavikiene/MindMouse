@@ -20,24 +20,16 @@ if (demo == true) {
     var data = JSON.parse(fs.readFileSync('demoData.json', 'utf8'));
     console.log("Demo:");
     SvmModule.trainSVM(data);
+	var side;
     connection.io.on('connection', function (socket) {
         for (var index = 0; index < (data.length - 1); index++) {
+			side = "left";
             if (data[index][1] == 1) {
-                socket.emit('train', {"attr": "train", "side": "right", "value": data[index][0]});
-            } else {
-                socket.emit('train', {"attr": "train", "side": "left", "value": data[index][0]});
+				side = "right";
             }
+			socket.emit('train', {"attr": "train", "side": side, "value": data[index][0]});
         }
-        socket.emit('train', {"attr": "boundary", "value": SvmModule.dataForBoundaries(data)});
-
-
-        socket.on("actions", function (action) {
-            console.log(action, "action");
-            if (action == 'save_data' && sentToDb == false) {
-                connection.sendDataToDb(MuseModule.getTrainingData());
-                sentToDb = true;
-            }
-        });
+		socket.emit('train', {"attr": "boundary", "value": SvmModule.dataForBoundaries(data)});
     });
 } else {
     connection.io.on('connection', function (socket) {
@@ -47,13 +39,12 @@ if (demo == true) {
             if (action == 'startTraining') {
                 MuseModule.setStartTraining(true);
             } else if (action == 'start_stop') {
-                if (MuseModule.getStoppedControll() == false) {
-                    MuseModule.setStoppedControll(true);
-                } else {
-                    MuseModule.setStoppedControll(false);
-                }
+                MuseModule.changeMouseControllSetting();
             } else if (action == 'save_data') {
-                connection.sendDataToDb(MuseModule.getTrainingData());
+                //connection.sendDataToDb(MuseModule.getTrainingData());
+				//MuseModule.changeMouseControllSetting();
+            } else if (action == 'boundary') {//draw decision boundary manually
+				SvmModule.setSVMtrained(1);
             }
         });
         // Listen for incoming OSC bundles.

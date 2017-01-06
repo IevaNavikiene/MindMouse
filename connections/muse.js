@@ -18,11 +18,13 @@ var MuseModule = function () {
     this.startTraining = false; //allows to initialize training from browser
     this.startedTraining = false; //check if training process started (not to start it again)
     this.stoppedControl = true;// if true then we do not controll mouse 
+	this.trainingSamplesPerClass = 100;
+	this.wait = false; // do not send many data via sockeet when boundary data is sending
 };
 MuseModule.prototype.listenMuse = function (oscData, socket, controllActions, svm) {
     now = Date.now();
     var param; // initialize param for batery json array
-    if ((now - this.lastPointTime <= 2000) || (this.lastPointTime - now <= 2000)) {
+    if (((now - this.lastPointTime <= 2000) || (this.lastPointTime - now <= 2000)) && this.wait == false) {
         this.lastPointTime = now;
         if (oscData.address == "/muse/elements/beta_absolute") {
             if (oscData.args[1] != "0" && oscData.args[2] != "0" && this.isGoodSignal == true) {
@@ -30,7 +32,7 @@ MuseModule.prototype.listenMuse = function (oscData, socket, controllActions, sv
                     if (this.startTraining === false) {
                         return;
                     }
-                    if (this.dataToTrainSVM.length < 100) {
+                    if (this.dataToTrainSVM.length < this.trainingSamplesPerClass) {
                         console.log('Think right');
                         this.normalizedValues = [(oscData.args[1] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue), (oscData.args[2] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue)];
                         this.dataToTrainSVM.push([this.normalizedValues, 1]);
@@ -39,7 +41,7 @@ MuseModule.prototype.listenMuse = function (oscData, socket, controllActions, sv
                         //give user some time to concentrate on other side
                         this.pause += 1;
                         console.log('Start think left');
-                    } else if (this.dataToTrainSVM.length < (200 + this.pauseTime)) {
+                    } else if (this.dataToTrainSVM.length < (this.trainingSamplesPerClass*2 + this.pauseTime)) {
                         console.log('Think left');
                         this.normalizedValues = [(oscData.args[1] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue), (oscData.args[2] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue)];
                         this.dataToTrainSVM.push([this.normalizedValues, 0]);
@@ -51,22 +53,26 @@ MuseModule.prototype.listenMuse = function (oscData, socket, controllActions, sv
                             this.startedTraining = true;
                         }
                     }
-                } else if (this.stoppedControl == false) {
+                } else{
                     if (svm.getSVMtrained() == 1) {
-                        console.log('Network trained');
-                        socket.emit('train', {"attr": "boundary", "value": svm.dataForBoundaries(this.dataToTrainSVM)});
-                        svm.setSVMtrained(2);
+						this.wait = true;
+						svm.setSVMtrained(2);
+						socket.emit('train', {"attr": "boundary", "value": svm.dataForBoundaries(this.dataToTrainSVM)});
+						this.wait = false;
+						console.log('Network trained');
                     }
-                    this.normalizedValues = [(oscData.args[1] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue), (oscData.args[2] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue)];
-                    var answer = svm.predictSVM(this.normalizedValues);
-                    if (answer > 0) {
-                        controllActions.moveMouse(50, 200);
-                        socket.emit('train', {"attr": "test", "side": "right", "value": this.normalizedValues});
-                    } else {
-                        controllActions.moveMouse(-50, 200);
-                        socket.emit('train', {"attr": "test", "side": "left", "value": this.normalizedValues});
-                    }
-                    //      console.log('answer:', answer);
+					if (this.stoppedControl == false) {
+						this.normalizedValues = [(oscData.args[1] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue), (oscData.args[2] + this.minAbsoluteValue) / (this.maxAbsoluteValue + this.minAbsoluteValue)];
+						var answer = svm.predictSVM(this.normalizedValues);
+						if (answer > 0) {
+							controllActions.moveMouse(50, 200);
+							socket.emit('train', {"attr": "test", "side": "right", "value": this.normalizedValues});
+						} else {
+							controllActions.moveMouse(-50, 200);
+							socket.emit('train', {"attr": "test", "side": "left", "value": this.normalizedValues});
+						}
+						//      console.log('answer:', answer);
+					}
                 }
             }
             return;
@@ -115,12 +121,21 @@ MuseModule.prototype.listenMuse = function (oscData, socket, controllActions, sv
         }//console.log(oscData.address);
     }
 };
-
-MuseModule.prototype.setStoppedControll = function setStoppedControll(boolValue) {
-    this.stoppedControll = boolValue;
+                        
+MuseModule.prototype.drawDecisionBoundary = function drawDecisionBoundary(socket, svm) {
+	svm.dataForBoundaries(this.dataToTrainSVM, socket);
+    svm.setSVMtrained(2);
+}
+MuseModule.prototype.changeMouseControllSetting = function changeMouseControllSetting() {
+	if( this.stoppedControl == false){
+		this.stoppedControl = true;
+	}else{
+		this.stoppedControl = false;
+	}
+    
 };
 MuseModule.prototype.getStoppedControll = function getStoppedControll() {
-    return this.stoppedControll;
+    return this.stoppedControl;
 }
 MuseModule.prototype.setStartTraining = function setStartTraining(boolValue) {
     this.startTraining = boolValue;

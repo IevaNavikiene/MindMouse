@@ -24,7 +24,7 @@ $(document).ready(function () {
             this.trainElement = chart(this.trainElementName);
             this.testElement = chart(this.testElementName);
             this.socket = io.connect("http://localhost:3000");
-            this.socket.on("train", $.proxy(function (data) {
+            this.socket.on("train", $.proxy(function (data, fn) {
                 // console.log(data.attr, data.value);
                 var typeData = false;
                 var color = 'red';
@@ -101,7 +101,6 @@ $(document).ready(function () {
                     case "boundary":
                         typeData = true;
                         $('#left').hide();
-                        $('#start_training').hide();
                         var color;
                         $.each(data.value, $.proxy(function (index, point) {
                             color = 'red';
@@ -121,7 +120,7 @@ $(document).ready(function () {
                                     .style("stroke", "none")
                                     .style("fill", color)
                                     .style("opacity", 0.2)
-                                    .attr("r", 1);
+                                    .attr("r", 6);
                             this.testElement.selectAll("scatter-dots")
                                     .data([point[0]])
                                     .enter().append("svg:circle")
@@ -134,7 +133,7 @@ $(document).ready(function () {
                                     .style("stroke", "none")
                                     .style("fill", color)
                                     .style("opacity", 0.2)
-                                    .attr("r", 1);
+                                    .attr("r", 6);
                         }, this));
                         $('#saveData').modal('show');
                         $('#cancel').on('click', $.proxy(function () {
@@ -150,6 +149,7 @@ $(document).ready(function () {
                         }, this));
                         break;
                     default:
+					 console.log('aaaaaaa',data.attr, data.value);fn('woot');
                         element = $('#blink');
                         break;
                 }
@@ -168,6 +168,16 @@ $(document).ready(function () {
              */
             $('#start_training').on('click', $.proxy(function () {
                 this.socket.emit("actions", 'startTraining');
+				$('#start_training').hide();
+            }, this));
+			/* Start mouse control manually if something went wrong*/
+			$('#mouse_control').on('click', $.proxy(function () {
+                this.socket.emit("actions", 'start_stop');
+            }, this));
+			/* draw decision boundary manually if something went wrong*/
+			$('#draw_boundary').on('click', $.proxy(function () {
+                this.socket.emit("actions", 'boundary');
+				//$('#draw_boundary').hide();
             }, this));
             /*
              * Catch stoping mouse movement event (with keybord press "y" letter
@@ -175,7 +185,7 @@ $(document).ready(function () {
              */
             $(document).keypress($.proxy(function (e) {
                 var key = e.which;
-                if (key == 121)  // the enter key code
+                if (key == 121)  // y
                 {
                     this.changeMouseControll();
                 }
