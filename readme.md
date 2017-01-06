@@ -25,7 +25,9 @@ Demo looks like this:
 ![image](http://biophysical.eu/images/MindMouse.jpg)
 Here you can find a mini demonstration
 https://youtu.be/ZrI-5-QBG_g
+
 # Game examples
+
 I enjoyed play with mouse movements these simple games: 
 http://minimouse.us/index.html
 
