@@ -23,6 +23,8 @@ If the process stopped it is maybe due to the bad signal from one of the frontal
 * You can run demo program without muse device by typing node server.js demo (it will be different from real training Muse EEG because you won't notice appearing instructions to look left or right
 Demo looks like this:
 ![image](http://biophysical.eu/images/MindMouse.jpg)
+Here you can find a mini demonstration
+https://youtu.be/ZrI-5-QBG_g
 # Game examples
 I enjoyed play with mouse movements these simple games: 
 http://minimouse.us/index.html
